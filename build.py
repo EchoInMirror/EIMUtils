@@ -5,6 +5,8 @@ if os.path.exists('build'):
     shutil.rmtree('build')
 
 os.makedirs('build/musicpy')
+shutil.copyfile('LICENSE', 'build/LICENSE')
+shutil.copyfile('README.md', 'build/README.md')
 shutil.copyfile('musicpy/musicpy/__init__.py', 'build/musicpy/__init__.py')
 shutil.copyfile('musicpy/musicpy/database.py', 'build/musicpy/database.py')
 shutil.copyfile('musicpy/musicpy/structures.py', 'build/musicpy/structures.py')
