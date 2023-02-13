@@ -14,6 +14,11 @@ jobs:
         with:
           submodules: true
 
+      - name: Setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10' 
+
       - name: Install requirements
         run: pip install ordered-set nuitka
 
@@ -22,10 +27,10 @@ jobs:
 
       - name: Nuitka
         run: version='${{ github.ref }}' && cd build && nuitka main.py --standalone --lto=yes --company-name=EchoInMirror --product-name=EIMUtils --file-version=${version:10} --windows-icon-from-ico=../logo.ico
+        shell: bash
 
       - name: Package
         run: mv main.dist EIMUtils && mv EIMUtils/main.exe EIMUtils/EIMUtils.exe && Compress-Archive -Path EIMUtils -DestinationPath EIMUtils.zip
-        shell: pwsh
 
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
