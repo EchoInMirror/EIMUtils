@@ -1,0 +1,3 @@
+[submodule "musicpy"]
+	path = musicpy
+	url = https://github.com/Rainbow-Dreamer/musicpy.git

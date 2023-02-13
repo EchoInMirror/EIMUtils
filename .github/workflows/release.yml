@@ -1,0 +1,36 @@
+name: Release
+
+on:
+  release:
+    types:
+      - created
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - name: Check out git repository
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      - name: Install requirements
+        run: pip install ordered-set nuitka
+
+      - name: Generate files
+        run: python build.py
+
+      - name: Nuitka
+        run: version='${{ github.ref }}' && cd build && nuitka main.py --standalone --lto=yes --company-name=EchoInMirror --product-name=EIMUtils --file-version=${version:10} --windows-icon-from-ico=../logo.ico
+
+      - name: Package
+        run: mv main.dist EIMUtils && mv EIMUtils/main.exe EIMUtils/EIMUtils.exe && Compress-Archive -Path EIMUtils -DestinationPath EIMUtils.zip
+        shell: pwsh
+
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: EIMUtils.zip
+          asset_name: EIMUtils-win64.zip
+          tag: ${{ github.ref }}
