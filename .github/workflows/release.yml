@@ -55,10 +55,7 @@ jobs:
         run: python build.py
 
       - name: Nuitka
-        run: cd build && python -m nuitka main.py --standalone --assume-yes-for-downloads --lto=yes --company-name=EchoInMirror --product-name=EIMUtils --file-version=${{ github.event.release.tag_name }} --macos-app-icon=../logo512.png --static-libpython=yes
-        shell: bash
-
-      - uses: Nuitka/Nuitka-Action@main
+        uses: Nuitka/Nuitka-Action@main
         with:
           nuitka-version: main
           script-name: build/main.py
