@@ -6,7 +6,7 @@ on:
       - created
 
 jobs:
-  release:
+  build-windows:
     runs-on: windows-latest
     steps:
       - name: Check out git repository
@@ -17,7 +17,7 @@ jobs:
       - name: Setup python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10' 
+          python-version: '3.11'
 
       - name: Install requirements
         run: pip install ordered-set nuitka
@@ -26,7 +26,7 @@ jobs:
         run: python build.py
 
       - name: Nuitka
-        run: version='${{ github.ref }}' && cd build && python -m nuitka main.py --standalone --assume-yes-for-downloads --lto=yes --company-name=EchoInMirror --product-name=EIMUtils --file-version=${version:10} --windows-icon-from-ico=../logo.ico
+        run: cd build && python -m nuitka main.py --standalone --assume-yes-for-downloads --lto=yes --company-name=EchoInMirror --product-name=EIMUtils --file-version=${{ github.event.release.tag_name }} --mingw64 --windows-icon-from-ico=../logo.ico
         shell: bash
 
       - name: Package
@@ -38,4 +38,39 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: build/EIMUtils.zip
           asset_name: EIMUtils-Windows.zip
-          tag: ${{ github.ref }}
+          tag: ${{ github.event.release.tag_name }}
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - name: Check out git repository
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      - name: Setup python
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          python-version: 3.11
+
+      - name: Install requirements
+        run: conda install libpython-static && pip3 install ordered-set nuitka imageio
+
+      - name: Generate files
+        run: python build.py
+
+      - name: Nuitka
+        run: cd build && python -m nuitka main.py --standalone --assume-yes-for-downloads --lto=yes --company-name=EchoInMirror --product-name=EIMUtils --file-version=${{ github.event.release.tag_name }} --macos-app-icon=../logo512.png --static-libpython=yes
+        shell: bash
+
+      - name: Package
+        run: cd build && mv main.dist EIMUtils && mv EIMUtils/main EIMUtils/EIMUtils && zip -r EIMUtils.zip EIMUtils
+
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: build/EIMUtils.zip
+          asset_name: EIMUtils-macOS.zip
+          tag: ${{ github.event.release.tag_name }}
