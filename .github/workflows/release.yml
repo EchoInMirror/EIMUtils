@@ -63,7 +63,7 @@ jobs:
           company-name: EchoInMirror
           product-name: EIMUtils
           file-version: ${{ github.event.release.tag_name }}
-          macos-app-icon: ../logo512.png
+          macos-app-icon: logo512.png
 
       - name: Package
         run: cd build && mv main.dist EIMUtils && mv EIMUtils/main EIMUtils/EIMUtils && zip -r EIMUtils.zip EIMUtils
