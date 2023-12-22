@@ -120,7 +120,6 @@ jobs:
           product-name: EIMUtils
           file-version: ${{ github.event.release.tag_name }}
           macos-app-icon: logo512.png
-          macos-arch: arm64
 
       - name: Package
         run: |
