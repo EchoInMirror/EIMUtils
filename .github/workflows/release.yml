@@ -135,3 +135,47 @@ jobs:
           file: build/EIMUtils.zip
           asset_name: EIMUtils-macOS.zip
           tag: ${{ github.event.release.tag_name }}
+
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out git repository
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      - name: Setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install requirements
+        run: pip3 install imageio
+
+      - name: Generate files
+        run: python build.py
+
+      - name: Nuitka
+        uses: Nuitka/Nuitka-Action@main
+        with:
+          nuitka-version: main
+          script-name: build/main.py
+          onefile: false
+          company-name: EchoInMirror
+          product-name: EIMUtils
+          file-version: ${{ github.event.release.tag_name }}
+
+      - name: Package
+        run: |
+          cd build
+          mv main.dist EIMUtils
+          mv EIMUtils/main.bin EIMUtils/EIMUtils
+          zip -r EIMUtils.zip EIMUtils
+
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: build/EIMUtils.zip
+          asset_name: EIMUtils-Linux.zip
+          tag: ${{ github.event.release.tag_name }}
