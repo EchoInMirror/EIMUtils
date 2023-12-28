@@ -67,7 +67,8 @@ jobs:
         uses: Nuitka/Nuitka-Action@main
         with:
           nuitka-version: main
-          script-name: build/main.py
+          script-name: main.py
+          working-directory: build
           onefile: false
           company-name: EchoInMirror
           product-name: EIMUtils
@@ -86,7 +87,7 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: build/EIMUtils.zip
-          asset_name: EIMUtils-macos-x86_64.zip
+          asset_name: EIMUtils-MacOS-x86_64.zip
           tag: ${{ github.event.release.tag_name }}
 
   build-macos-arm:
@@ -109,11 +110,15 @@ jobs:
       - name: Generate files
         run: python build.py
 
+      - name: Delete musicpy
+        run: rm -rf musicpy
+
       - name: Nuitka
         uses: Nuitka/Nuitka-Action@main
         with:
           nuitka-version: main
-          script-name: build/main.py
+          script-name: main.py
+          working-directory: build
           macos-target-arch: arm64
           onefile: false
           company-name: EchoInMirror
@@ -133,7 +138,7 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: build/EIMUtils.zip
-          asset_name: EIMUtils-macOS.zip
+          asset_name: EIMUtils-MacOS.zip
           tag: ${{ github.event.release.tag_name }}
 
   build-linux:
@@ -159,7 +164,8 @@ jobs:
         uses: Nuitka/Nuitka-Action@main
         with:
           nuitka-version: main
-          script-name: build/main.py
+          script-name: main.py
+          working-directory: build
           onefile: false
           company-name: EchoInMirror
           product-name: EIMUtils
