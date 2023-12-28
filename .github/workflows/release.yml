@@ -77,7 +77,7 @@ jobs:
 
       - name: Package
         run: |
-          cd build
+          cd build/build
           mv main.dist EIMUtils
           mv EIMUtils/main.bin EIMUtils/EIMUtils
           zip -r EIMUtils.zip EIMUtils
@@ -128,7 +128,7 @@ jobs:
 
       - name: Package
         run: |
-          cd build
+          cd build/build
           mv main.dist EIMUtils
           mv EIMUtils/main.bin EIMUtils/EIMUtils
           zip -r EIMUtils.zip EIMUtils
@@ -173,7 +173,7 @@ jobs:
 
       - name: Package
         run: |
-          cd build
+          cd build/build
           mv main.dist EIMUtils
           mv EIMUtils/main.bin EIMUtils/EIMUtils
           zip -r EIMUtils.zip EIMUtils
